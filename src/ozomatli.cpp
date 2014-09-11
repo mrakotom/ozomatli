@@ -28,21 +28,24 @@ bool validateOperator(string op){
 void printOLP1Aggregation(vector <int> data, vector<int> parts, ofstream * output){
 	*output<<"#Aggregated Values:"<<endl;
 	int count=1;
-	int sum=data[1];
-	for (unsigned int i=1; i<parts.size(); i++){
-		if (parts[i]!=parts[i-1]){
-			for (int j=0; j<(count/2-1); j++){
+	int sum=data[0];
+	for (unsigned int i=1; i<parts.size()+1; i++){
+		if ((i==parts.size())||(parts[i]!=parts[i-1])){
+			for (int j=0; j<((count/2)-1+(count%2)); j++){
 				*output << "- ";
 			}
-			*output << sum<< " ";
+			*output << sum;
 			for (int j=0; j<(count/2); j++){
-				*output << "- ";
+				*output << " -";
+			}
+			if (i!=parts.size()){
+			*output << ", ";
 			}
 			count=1;
-			sum=parts[i];
+			sum=data[i];
 		}else{
 			count++;
-			sum+=parts[i];
+			sum+=data[i];
 		}
 	}
 	*output<<endl;
@@ -58,13 +61,12 @@ void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, of
 			int i;
 			for (i=0; i<size[0]-1; i++){
 				manager.push_back(data[0][i]);
-				*output<<data[0][i]<<",";
+				*output<<data[0][i]<<", ";
 			}
 			manager.push_back(data[0][i]);
 			*output<<data[0][i];
 			*output<<endl;
 		}
-		cerr<<"test";
 		manager.computeQualities(false);
 		manager.computeDichotomy(0.0001);
 		*output<<"#Aggregations"<<endl;
@@ -94,53 +96,32 @@ int main(int argc, const char* argv[]) {
 	}
     ifstream input(argv[1]);
     ofstream *output=new ofstream(argv[2]);
+    bool v_op, v_size;
+    v_op = false;
+    v_size = false;
     string op;
     vector<int> size;
     vector<vector<int> > data;
     //Iterator for parsing csv file. ',' is used as separator between each field.
     CSVIterator loop(input, ',');
     //operator
-    int count=0;
-    int tempcount=0;
     for(; loop != CSVIterator(); ++loop) {
-    	count++;
     	//Skip comments
     	if ((*loop)[0][0]=='#'){
     	}
-    	else{
+    	else if (!v_op){
     		op=(*loop)[0];
-    		break;
-    	}
-    }
-    if (!validateOperator(op)){
-		cerr<<"Error: invalid aggregation operator "<<op<<endl;
-		return 2;
-    }
-    //size
-    for(; loop != CSVIterator(); ++loop) {
-    	tempcount++;
-    	if (tempcount<=count){}
-    	//Skip comments
-    	else if ((*loop)[0][0]=='#'){
-    	}
-    	else{
-    		for (unsigned int i=0; i<1; i++){
-    			cout<<(*loop)[i];
+    	    if (!validateOperator(op)){
+    			cerr<<"Error: invalid aggregation operator "<<op<<endl;
+    			return 2;
+    	    }
+    		v_op=true;
+    	}else if (!v_size){
+    		for (unsigned int i=0; i<(*loop).size(); i++){
     			size.push_back(atoi(((*loop)[i]).c_str()));
     		}
-    		break;
-    	}
-    }
-    count=tempcount;
-    tempcount=0;
-    //data
-    for(; loop != CSVIterator(); ++loop) {
-    	tempcount++;
-    	if (tempcount<=count){}
-    	//Skip comments
-    	else if ((*loop)[0][0]=='#'){
-    	}
-    	else{
+    	v_size=true;
+    	}else{
     		data.push_back(vector<int>());
     		for (unsigned int i=0; i<(*loop).size(); i++){
     			(data[data.size()-1]).push_back(atoi(((*loop)[i]).c_str()));
