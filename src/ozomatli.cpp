@@ -25,18 +25,18 @@ bool validateOperator(string op){
 	return false;
 }
 
-void printOLP1Aggregation(vector <int> data, vector<int> parts){
-	cout<<"#Aggregated Values:"<<endl;
+void printOLP1Aggregation(vector <int> data, vector<int> parts, ofstream * output){
+	*output<<"#Aggregated Values:"<<endl;
 	int count=1;
 	int sum=data[1];
 	for (unsigned int i=1; i<parts.size(); i++){
 		if (parts[i]!=parts[i-1]){
 			for (int j=0; j<(count/2-1); j++){
-				cout << "- ";
+				*output << "- ";
 			}
-			cout << sum<< " ";
+			*output << sum<< " ";
 			for (int j=0; j<(count/2); j++){
-				cout << "- ";
+				*output << "- ";
 			}
 			count=1;
 			sum=parts[i];
@@ -45,6 +45,7 @@ void printOLP1Aggregation(vector <int> data, vector<int> parts){
 			sum+=parts[i];
 		}
 	}
+	*output<<endl;
 }
 
 void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, ofstream *output){
@@ -53,7 +54,7 @@ void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, of
 	    *output<<"#Operator: " <<op<<endl;
 		if (op.compare("OLPAggreg1")==0){
 			*output<<"#Size: "<<size[0]<<endl;
-			*output<<"#Values: "<<size[0]<<endl;
+			*output<<"#Values: "<<endl;
 			int i;
 			for (i=0; i<size[0]-1; i++){
 				manager.push_back(data[0][i]);
@@ -63,6 +64,7 @@ void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, of
 			*output<<data[0][i];
 			*output<<endl;
 		}
+		cerr<<"test";
 		manager.computeQualities(false);
 		manager.computeDichotomy(0.0001);
 		*output<<"#Aggregations"<<endl;
@@ -76,7 +78,7 @@ void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, of
 			for (int j=0; j<manager.getPartNumber(); j++){
 				res.push_back(manager.getPart(j));
 			}
-			printOLP1Aggregation(data[0], res);
+			printOLP1Aggregation(data[0], res, output);
 		}
 	}
 }
@@ -91,56 +93,64 @@ int main(int argc, const char* argv[]) {
 		return 1;
 	}
     ifstream input(argv[1]);
-    ofstream *output = new ofstream(argv[2]);
+    ofstream *output=new ofstream(argv[2]);
     string op;
     vector<int> size;
     vector<vector<int> > data;
-
     //Iterator for parsing csv file. ',' is used as separator between each field.
     CSVIterator loop(input, ',');
     //operator
+    int count=0;
+    int tempcount=0;
     for(; loop != CSVIterator(); ++loop) {
+    	count++;
     	//Skip comments
-    	if ((*loop)[1][0]=='#'){
+    	if ((*loop)[0][0]=='#'){
     	}
     	else{
-    		op=(*loop)[1];
+    		op=(*loop)[0];
     		break;
     	}
     }
     if (!validateOperator(op)){
-		cerr<<"Error: invalid aggregation operator"<<endl;
+		cerr<<"Error: invalid aggregation operator "<<op<<endl;
 		return 2;
     }
     //size
     for(; loop != CSVIterator(); ++loop) {
+    	tempcount++;
+    	if (tempcount<=count){}
     	//Skip comments
-    	if ((*loop)[1][0]=='#'){
+    	else if ((*loop)[0][0]=='#'){
     	}
     	else{
-    		for (unsigned int i=0; i<(*loop).size(); i++){
+    		for (unsigned int i=0; i<1; i++){
+    			cout<<(*loop)[i];
     			size.push_back(atoi(((*loop)[i]).c_str()));
     		}
     		break;
     	}
     }
+    count=tempcount;
+    tempcount=0;
     //data
     for(; loop != CSVIterator(); ++loop) {
+    	tempcount++;
+    	if (tempcount<=count){}
     	//Skip comments
-    	if ((*loop)[1][0]=='#'){
+    	else if ((*loop)[0][0]=='#'){
     	}
     	else{
-    		data.push_back(vector <int>());
+    		data.push_back(vector<int>());
     		for (unsigned int i=0; i<(*loop).size(); i++){
-    			data[data.size()].push_back(atoi(((*loop)[i]).c_str()));
+    			(data[data.size()-1]).push_back(atoi(((*loop)[i]).c_str()));
     		}
-    		break;
     	}
     }
     *output<<"#Ozomatli: "<<argv[1]<< " output file"<<endl;
     execOLPOperator(op, size, data, output);
 
+    delete output;
 
-
-
+    return 0;
 }
