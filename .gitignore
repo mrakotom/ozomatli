@@ -1,0 +1,11 @@
+*.o
+*.so
+*.a
+*~
+*.swp
+*.d
+.cproject
+.project
+Debug
+.settings
+
