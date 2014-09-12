@@ -51,7 +51,7 @@ void printOLP1Aggregation(vector <int> data, vector<int> parts, ofstream * outpu
 }
 
 void printOLP2Aggregation(vector <vector <int> > data, vector<int> parts, ofstream * output){
-	for (unsigned int i=0; i<data[0].size(); i++){
+	for (unsigned int i=0; i<data.size(); i++){
 		printOLP1Aggregation(data[i], parts, output);
 	}
 }
@@ -72,7 +72,7 @@ void printOLP3Aggregation(vector <vector <int> > data, vector<int> parts, vector
 
 void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, ofstream *output){
 	if (op.compare("OLPAggreg1")==0||op.compare("OLPAggreg2")==0||op.compare("OLPAggreg3")==0){
-		OLPAggregWrapper manager = OLPAggregWrapper(size.size());
+		OLPAggregWrapper manager =OLPAggregWrapper(size.size());
 	    *output<<"#Operator: " <<op<<endl;
 		if (op.compare("OLPAggreg1")==0){
 			*output<<"#Size: "<<size[0]<<endl;
@@ -86,36 +86,44 @@ void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, of
 			*output<<data[0][i];
 			*output<<endl;
 		}else if (op.compare("OLPAggreg2")==0){
-			*output<<"#Size: "<<size[0]<<endl;
+			*output<<"#Size: "<<size[0]<<"X"<<size[1]<<endl;
 			*output<<endl<<"#Values: "<<endl;
 			int i;
 			for (int j=0; j<size[1]; j++){
-				manager.addVector();
 				for (i=0; i<size[0]-1; i++){
-				manager.push_back(data[j][i]);
 				*output<<data[j][i]<<" | ";
 				}
-			manager.push_back(data[j][i]);
-			*output<<data[j][i];
-			*output<<endl;
+				*output<<data[j][i];
+				*output<<endl;
 			}
+			for (i=0; i<size[0]; i++){
+				manager.addVector();
+				for (int j=0; j<size[1]; j++){
+					manager.push_back(data[j][i]);
+				}
+				}
 		}else if (op.compare("OLPAggreg3")==0){
-				*output<<"#Size: "<<size[0]<<endl;
+			*output<<"#Size: "<<size[0]<<"X"<<size[1]<<"X"<<size[2]<<endl;
 				*output<<endl<<"#Values: "<<endl;
 				int i;
 				for (int k=0; k<size[2]; k++){
-					manager.addMatrix();
 				for (int j=0; j<size[1]; j++){
-					manager.addVector();
 					for (i=0; i<size[0]-1; i++){
-					manager.push_back(data[k*size[1]+j][i]);
 					*output<<data[j][i]<<" | ";
 					}
-				manager.push_back(data[k*size[1]+j][i]);
 				*output<<data[k*size[1]+j][i];
 				*output<<endl;
 				}
 			}
+				for (i=0; i<size[0]; i++){
+					manager.addMatrix();
+					for (int j=0; j<size[1]; j++){
+						manager.addVector();
+						for (int k=0; k<size[2]; k++){
+						manager.push_back(data[k*size[1]+j][i]);
+						}
+					}
+				}
 		}
 		manager.computeQualities(false);
 		manager.computeDichotomy(0.0001);
