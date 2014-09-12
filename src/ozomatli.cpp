@@ -19,7 +19,7 @@
 using namespace std;
 
 bool validateOperator(string op){
-	if (op.compare("OLPAggreg1")==0){
+	if (op.compare("OLPAggreg1")==0||op.compare("OLPAggreg2")==0||op.compare("OLPAggreg3")==0){
 		return true;
 	}
 	return false;
@@ -51,6 +51,26 @@ void printOLP1Aggregation(vector <int> data, vector<int> parts, ofstream * outpu
 	*output<<endl;
 }
 
+void printOLP2Aggregation(vector <vector <int> > data, vector<int> parts, ofstream * output){
+	for (int i=0; i<data.size(); i++){
+		printOLP1Aggregation(data[i], parts, output);
+	}
+}
+
+void printOLP3Aggregation(vector <vector <int> > data, vector<int> parts, vector<int> size, ofstream * output){
+	vector <vector <int >> tmp;
+	for (int k=0; k<size[2]; k++){
+		tmp.clear();
+		for (int j=0; j<size[1]; j++){
+			tmp.push_back(data[k*size[1]+j]);
+		}
+		printOLP2Aggregation(tmp, parts, output);
+	}
+}
+
+
+
+
 void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, ofstream *output){
 	if (op.compare("OLPAggreg1")==0||op.compare("OLPAggreg2")==0||op.compare("OLPAggreg3")==0){
 		OLPAggregWrapper manager = OLPAggregWrapper(size.size());
@@ -66,6 +86,37 @@ void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, of
 			manager.push_back(data[0][i]);
 			*output<<data[0][i];
 			*output<<endl;
+		}else if (op.compare("OLPAggreg2")==0){
+			*output<<"#Size: "<<size[0]<<endl;
+			*output<<endl<<"#Values: "<<endl;
+			int i;
+			for (int j=0; j<size[1]; j++){
+				manager.addVector();
+				for (i=0; i<size[0]-1; i++){
+				manager.push_back(data[j][i]);
+				*output<<data[j][i]<<" | ";
+				}
+			manager.push_back(data[j][i]);
+			*output<<data[j][i];
+			*output<<endl;
+			}
+		}else if (op.compare("OLPAggreg3")==0){
+				*output<<"#Size: "<<size[0]<<endl;
+				*output<<endl<<"#Values: "<<endl;
+				int i;
+				for (int k=0; k<size[2]; k++){
+					manager.addMatrix();
+				for (int j=0; j<size[1]; j++){
+					manager.addVector();
+					for (i=0; i<size[0]-1; i++){
+					manager.push_back(data[k*size[1]+j][i]);
+					*output<<data[j][i]<<" | ";
+					}
+				manager.push_back(data[k*size[1]+j][i]);
+				*output<<data[k*size[1]+j][i];
+				*output<<endl;
+				}
+			}
 		}
 		manager.computeQualities(false);
 		manager.computeDichotomy(0.0001);
@@ -80,7 +131,15 @@ void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, of
 			for (int j=0; j<manager.getPartNumber(); j++){
 				res.push_back(manager.getPart(j));
 			}
+			if (op.compare("OLPAggreg1")==0){
 			printOLP1Aggregation(data[0], res, output);
+			}
+			else if (op.compare("OLPAggreg2")==0){
+			printOLP2Aggregation(data, res, output);
+			}
+			else if (op.compare("OLPAggreg3")==0){
+			printOLP3Aggregation(data, res, size, output);
+			}
 		}
 	}
 }
