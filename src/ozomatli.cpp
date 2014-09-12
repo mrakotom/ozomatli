@@ -57,7 +57,7 @@ void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, of
 	    *output<<"#Operator: " <<op<<endl;
 		if (op.compare("OLPAggreg1")==0){
 			*output<<"#Size: "<<size[0]<<endl;
-			*output<<"#Values: "<<endl;
+			*output<<endl<<"#Values: "<<endl;
 			int i;
 			for (i=0; i<size[0]-1; i++){
 				manager.push_back(data[0][i]);
@@ -69,9 +69,9 @@ void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, of
 		}
 		manager.computeQualities(false);
 		manager.computeDichotomy(0.0001);
-		*output<<"#Aggregations"<<endl;
+		*output<<endl<<"#Aggregations"<<endl;
 		for (int i=0; i<manager.getParameterNumber(); i++){
-			*output<<"-------------"<<endl;
+			*output<<endl<<"#-------------"<<endl;
 			float p=manager.getParameter(i);
 			*output<<"#Parameter: "<<p<<endl;
 			*output<<"#Gain: "<<manager.getGainByIndex(i)<<"; Loss: "<<manager.getLossByIndex(i)<<endl;
