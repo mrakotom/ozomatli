@@ -26,7 +26,6 @@ bool validateOperator(string op){
 }
 
 void printOLP1Aggregation(vector <int> data, vector<int> parts, ofstream * output){
-	*output<<"#Aggregated Values:"<<endl;
 	int count=1;
 	int sum=data[0];
 	for (unsigned int i=1; i<parts.size()+1; i++){
@@ -52,13 +51,13 @@ void printOLP1Aggregation(vector <int> data, vector<int> parts, ofstream * outpu
 }
 
 void printOLP2Aggregation(vector <vector <int> > data, vector<int> parts, ofstream * output){
-	for (int i=0; i<data.size(); i++){
+	for (unsigned int i=0; i<data[0].size(); i++){
 		printOLP1Aggregation(data[i], parts, output);
 	}
 }
 
 void printOLP3Aggregation(vector <vector <int> > data, vector<int> parts, vector<int> size, ofstream * output){
-	vector <vector <int >> tmp;
+	vector <vector <int > > tmp;
 	for (int k=0; k<size[2]; k++){
 		tmp.clear();
 		for (int j=0; j<size[1]; j++){
@@ -131,6 +130,7 @@ void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, of
 			for (int j=0; j<manager.getPartNumber(); j++){
 				res.push_back(manager.getPart(j));
 			}
+			*output<<"#Aggregated Values:"<<endl;
 			if (op.compare("OLPAggreg1")==0){
 			printOLP1Aggregation(data[0], res, output);
 			}
