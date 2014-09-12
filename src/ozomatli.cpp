@@ -39,7 +39,7 @@ void printOLP1Aggregation(vector <int> data, vector<int> parts, ofstream * outpu
 				*output << " -";
 			}
 			if (i!=parts.size()){
-			*output << ", ";
+			*output << " | ";
 			}
 			count=1;
 			sum=data[i];
@@ -61,7 +61,7 @@ void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, of
 			int i;
 			for (i=0; i<size[0]-1; i++){
 				manager.push_back(data[0][i]);
-				*output<<data[0][i]<<", ";
+				*output<<data[0][i]<<" | ";
 			}
 			manager.push_back(data[0][i]);
 			*output<<data[0][i];
