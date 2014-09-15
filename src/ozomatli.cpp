@@ -58,6 +58,13 @@ void printOLP2Aggregation(vector <vector <int> > data, vector<int> parts, ofstre
 
 void printOLP3Aggregation(vector <vector <int> > data, vector<int> parts, vector<int> size, ofstream * output){
 	vector <vector <int > > tmp;
+	vector <vector <int > > sum;
+	for (int j=0; j<size[2]; j++){
+		sum.push_back(vector<int>());
+		for (int i=0; i<size[0]; i++){
+			sum[j].push_back(0);
+		}
+	}
 	for (int k=0; k<size[2]; k++){
 		tmp.clear();
 		for (int j=0; j<size[1]; j++){
@@ -65,6 +72,15 @@ void printOLP3Aggregation(vector <vector <int> > data, vector<int> parts, vector
 		}
 		printOLP2Aggregation(tmp, parts, output);
 	}
+	for (int i=0; i<size[0]; i++){
+		for (int k=0; k<size[2]; k++){
+				for (int j=0; j<size[1]; j++){
+				sum[k][i]+=data[j*size[2]+k][i];
+			}
+		}
+	}
+	*output<<"#Sum"<<endl;
+	printOLP2Aggregation(sum, parts, output);
 }
 
 
@@ -120,7 +136,7 @@ void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, of
 					for (int j=0; j<size[1]; j++){
 						manager.addVector();
 						for (int k=0; k<size[2]; k++){
-						manager.push_back(data[k*size[1]+j][i]);
+						manager.push_back(data[j*size[2]+k][i]);
 						}
 					}
 				}
