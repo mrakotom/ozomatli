@@ -109,7 +109,7 @@ void execOLPOperator(string op, vector<int> size, vector<vector <int> > data, of
 				for (int k=0; k<size[2]; k++){
 				for (int j=0; j<size[1]; j++){
 					for (i=0; i<size[0]-1; i++){
-					*output<<data[j][i]<<" | ";
+					*output<<data[k*size[1]+j][i]<<" | ";
 					}
 				*output<<data[k*size[1]+j][i];
 				*output<<endl;
