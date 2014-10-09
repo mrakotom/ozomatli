@@ -4,13 +4,19 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../src/ozomatli.cpp 
+../src/OLPBench.cpp \
+../src/ozomatli.cpp \
+../src/ozomatli_olp_bench.cpp 
 
 OBJS += \
-./src/ozomatli.o 
+./src/OLPBench.o \
+./src/ozomatli.o \
+./src/ozomatli_olp_bench.o 
 
 CPP_DEPS += \
-./src/ozomatli.d 
+./src/OLPBench.d \
+./src/ozomatli.d \
+./src/ozomatli_olp_bench.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
