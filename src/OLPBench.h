@@ -13,10 +13,7 @@
 #include <iostream>
 #include <sstream>
 #include <time.h>
-#include <lpaggreg/OLPAggregWrapper.h>
-
-#define SEP +", "+
-#define SSEP ", "+
+#include <benchlpaggreg/OLPAggregWrapper.h>
 
 using namespace std;
 
@@ -47,17 +44,18 @@ class OLPBench {
 		const vector<int>& getDimension3() const;
 		const vector<double>& getP() const;
 		int getIteration() const;
-		void launchBench(ostream output);
+		void launchBench(ostream *output);
 	private:
 		void addLineInteger(vector<string> tab, vector<int>);
 		void addLineDouble(vector<string> tab, vector<double>);
 		void addLineFloat(vector<string> tab, vector<float>);
 		void generateMatrix(int i, int j, int k, double density);
-		void launchTest(ostream output, double p);
+		void launchTest(ostream *output, double p);
 
 };
 
 int generateValue(double density);
+void printHeader(ostream *output);
 
 
 #endif /* OLPBENCH_H_ */

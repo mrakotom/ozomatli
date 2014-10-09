@@ -7,7 +7,7 @@
 
 #include "OLPBench.h"
 
-OLPBench::OLPBench():iteration(1),olp(0) {
+OLPBench::OLPBench():threshold(0.1),iteration(1),olp(0) {
 	srand (time(NULL));
 }
 
@@ -62,7 +62,7 @@ OLPBench::~OLPBench() {
 
 void OLPBench::addLineInteger(vector<string> tab, vector<int> allocator) {
 	if (tab.size()==3&&(atoi((tab[1]).c_str())>atoi((tab[2]).c_str()))){
-		for (unsigned int i=(atoi((tab[0]).c_str())); i<(atoi((tab[1]).c_str())); i+=(atoi((tab[2]).c_str())))
+		for (int i=(atoi((tab[0]).c_str())); i<(atoi((tab[1]).c_str())); i+=(atoi((tab[2]).c_str())))
 		allocator.push_back(i);
 	}else{
 		for (unsigned int i=0; i<tab.size(); i++){
@@ -113,7 +113,7 @@ void OLPBench::addLineFloat(vector<string> tab, vector<float> allocator) {
 }
 
 
-void OLPBench::launchBench(ostream output) {
+void OLPBench::launchBench(ostream *output) {
 	int num=0;
 	int cdimension1=1;
 	int cdimension2=1;
@@ -121,24 +121,24 @@ void OLPBench::launchBench(ostream output) {
 	double cdensity=1;
 	double cp=1;
 	printHeader(output);
-	for (int i=0; i<dimension1.size();i++){
+	for (unsigned int i=0; i<dimension1.size();i++){
 		cdimension1=dimension1[i];
-		for (int j=0; j<dimension2.size();j++){
+		for (unsigned int j=0; j<dimension2.size();j++){
 			cdimension2=dimension2[j];
-			for (int k=0; j<dimension3.size();k++){
+			for (unsigned int k=0; j<dimension3.size();k++){
 				cdimension3=dimension3[k];
-				for (int l=0; l<density.size(); l++){
+				for (unsigned int l=0; l<density.size(); l++){
 					cdensity=density[l];
-					for (int m=0; m<p.size(); m++){
+					for (unsigned int m=0; m<p.size(); m++){
 						cp=p[m];
 						for (int n=0; n<iteration; n++){
-							output<< ++n SEP cdimension1 SEP cdimension2 SEP cdimension3 SEP threshold;
+							*output<< (++num) <<", "<< cdimension1 <<", "<< cdimension2 <<", "+ cdimension3 <<", "<< threshold;
 							if (cp==-1){
-								output<<SSEP "rand";
+								*output<<", "<< "rand";
 							}else{
-								output<<SSEP cp;
+								*output<<", " << cp;
 							}
-							output<<SSEP cdensity;
+							*output<<", " << cdensity;
 							generateMatrix(i,j,k,l);
 							launchTest(output,cp);
 					}
@@ -172,13 +172,13 @@ void OLPBench::generateMatrix(int i, int j, int k, double density) {
 	}
 }
 
-void OLPBench::launchTest(ostream output, double p) {
+void OLPBench::launchTest(ostream *output, double p) {
 	olp->computeQualities(false);
 	olp->computeDichotomy(threshold);
 	olp->computeParts(p);
-	output << SSEP 0 SEP 0 SEP 0 SEP 0 SEP 0 SEP 0 SEP 0 SEP 0 SEP olp->getParameterNumber();
+	*output << ", " << 0 << ", " << 0 << ", " << 0 << ", " << 0 << ", " << 0 << ", " << 0 << ", " << 0 << ", " << 0 << ", " << olp->getParameterNumber()<<endl;
 }
 
-void printHeader(ostream output){
-	output << "N, DIM1, DIM2, DIM3, DICHO, P, DENSITY, COUNTER Q, COUNTER DICHO, COUNTER BC, COUNTER BP, TIME Q, TIME DICHO, TIME BC, TIME BP, P RETRIEVED" <<endl;
+void printHeader(ostream *output){
+	*output << "N, DIM1, DIM2, DIM3, DICHO, P, DENSITY, COUNTER Q, COUNTER DICHO, COUNTER BC, COUNTER BP, TIME Q, TIME DICHO, TIME BC, TIME BP, P RETRIEVED" <<endl;
 }
