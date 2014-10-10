@@ -4,8 +4,5 @@
 *~
 *.swp
 *.d
-.cproject
-.project
 Debug
-.settings
 ozomatli
