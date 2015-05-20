@@ -15,7 +15,11 @@
 #include <string>
 #include <math.h>
 #include <csvreader/CSVIterator.h>
-#include <lpaggreg/OLPAggregWrapper.h>
+#ifdef OPENMP
+#include <openmplpaggreg/OLPAggregWrapper.h>
+#else
+#include <benchlpaggreg/OLPAggregWrapper.h>
+#endif
 using namespace std;
 
 bool validateOperator(string op){
