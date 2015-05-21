@@ -6,3 +6,4 @@
 *.d
 Debug
 ozomatli
+/openmp/
