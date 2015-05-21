@@ -6,8 +6,4 @@
 *.d
 Debug
 ozomatli
-<<<<<<< HEAD
-/openmp/
-=======
 ozomatli-openmp
->>>>>>> 73385de0db360b328a4b948708846e6953030fdc
