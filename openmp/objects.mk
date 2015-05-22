@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -llpaggreg -lcsvreader
+LIBS := -lopenmplpaggreg -lgomp -lcsvreader
 
